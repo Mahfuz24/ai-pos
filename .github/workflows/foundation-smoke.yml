@@ -1,0 +1,19 @@
+name: AI-POS Foundation Smoke
+on:
+  pull_request:
+  push:
+    branches:
+      - setup/stage-d-foundation
+permissions:
+  contents: read
+jobs:
+  foundation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify foundation status exists
+        run: test -s docs/FOUNDATION-STATUS.md
+      - name: Report scope
+        run: |
+          echo "This is a smoke check only."
+          echo "It does not certify Stage C or Founder authentication."
