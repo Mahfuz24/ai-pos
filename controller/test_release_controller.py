@@ -26,7 +26,8 @@ def runs(sha=SHA):
     return [{"name": n, "path": path, "repository": {"full_name": "Mahfuz24/ai-pos"},
              "head_sha": sha, "status": "completed", "conclusion": "success", "event": "push"}
             for n, path in (("AI-POS Stage C Verification", ".github/workflows/stage-c-verify.yml"),
-                            ("AI-POS Foundation Smoke", ".github/workflows/foundation-smoke.yml"))]
+                            ("AI-POS Foundation Smoke", ".github/workflows/foundation-smoke.yml"),
+                            ("AI-POS Controller Unit Tests", ".github/workflows/controller-tests.yml"))]
 
 class ControllerTests(unittest.TestCase):
     def test_public_api_does_not_send_authorization(self):
