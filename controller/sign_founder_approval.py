@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """Founder-only local signer. Never run in GitHub Actions or send the key to AI."""
 import argparse
-import getpass
 import hashlib
 import hmac
 import json
@@ -11,6 +10,7 @@ import secrets
 import sys
 import time
 from pathlib import Path
+from release_controller import read_founder_key
 
 def main():
     parser = argparse.ArgumentParser()
@@ -22,9 +22,7 @@ def main():
     destination = Path(args.output).expanduser()
     if destination.exists():
         parser.error("output already exists; will not overwrite approval")
-    secret = getpass.getpass("Founder approval secret (never stored): ")
-    if len(secret) < 32:
-        parser.error("secret must contain at least 32 characters")
+    secret = read_founder_key()
     now = int(time.time())
     payload = {
         "repository": "Mahfuz24/ai-pos",
