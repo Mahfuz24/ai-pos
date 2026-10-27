@@ -13,7 +13,7 @@ import urllib.request
 REPO = "Mahfuz24/ai-pos"
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 REQUIRED = {
-    "AI-POS Stage C Verification": ".github/workflows/stage-c-verification.yml",
+    "AI-POS Stage C Verification": ".github/workflows/stage-c-verify.yml",
     "AI-POS Foundation Smoke": ".github/workflows/foundation-smoke.yml",
 }
 
