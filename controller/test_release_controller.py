@@ -45,7 +45,7 @@ class ControllerTests(unittest.TestCase):
         import os
         with tempfile.TemporaryDirectory() as folder:
             key = Path(folder) / "founder.key"
-            key.write_text("a" * 64 + "\\n")
+            key.write_text("a" * 64 + "\n")
             os.chmod(key, 0o600)
             self.assertEqual(read_founder_key(key), "a" * 64)
             os.chmod(key, 0o644)
