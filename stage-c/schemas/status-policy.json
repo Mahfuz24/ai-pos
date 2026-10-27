@@ -1,0 +1,144 @@
+{
+  "project": [
+    "draft",
+    "proposed",
+    "approved",
+    "active",
+    "blocked",
+    "completed",
+    "archived"
+  ],
+  "feature": [
+    "proposed",
+    "under_review",
+    "approved",
+    "implemented",
+    "verified",
+    "accepted",
+    "deferred",
+    "rejected",
+    "superseded",
+    "blocked"
+  ],
+  "requirement": [
+    "proposed",
+    "under_review",
+    "approved",
+    "implemented",
+    "verified",
+    "accepted",
+    "deferred",
+    "rejected",
+    "superseded",
+    "blocked"
+  ],
+  "architecture": [
+    "proposed",
+    "under_review",
+    "approved",
+    "superseded",
+    "rejected"
+  ],
+  "module": [
+    "proposed",
+    "approved",
+    "implemented",
+    "deprecated"
+  ],
+  "interface": [
+    "proposed",
+    "approved",
+    "implemented",
+    "deprecated"
+  ],
+  "feasibility": [
+    "not_run",
+    "pass",
+    "fail",
+    "blocked",
+    "not_applicable"
+  ],
+  "risk": [
+    "open",
+    "mitigating",
+    "resolved",
+    "accepted",
+    "closed"
+  ],
+  "design": [
+    "proposed",
+    "under_review",
+    "approved",
+    "implemented",
+    "superseded"
+  ],
+  "task": [
+    "proposed",
+    "ready",
+    "in_progress",
+    "blocked",
+    "implemented",
+    "verified",
+    "closed"
+  ],
+  "test": [
+    "draft",
+    "ready",
+    "deprecated"
+  ],
+  "defect": [
+    "open",
+    "triaged",
+    "fixing",
+    "ready_for_retest",
+    "verified",
+    "closed",
+    "reopened"
+  ],
+  "acceptance": [
+    "not_run",
+    "pass",
+    "fail",
+    "blocked",
+    "not_applicable",
+    "superseded"
+  ],
+  "change": [
+    "proposed",
+    "impact_review",
+    "approved",
+    "implementing",
+    "verifying",
+    "closed",
+    "rejected",
+    "deferred",
+    "blocked"
+  ],
+  "approval": [
+    "pending",
+    "approved",
+    "rejected",
+    "revoked"
+  ],
+  "handoff": [
+    "draft",
+    "ready",
+    "blocked",
+    "accepted",
+    "rejected"
+  ],
+  "evidence": [
+    "not_run",
+    "pass",
+    "fail",
+    "blocked"
+  ],
+  "release": [
+    "proposed",
+    "ready",
+    "approved",
+    "deployed",
+    "rolled_back",
+    "blocked"
+  ]
+}

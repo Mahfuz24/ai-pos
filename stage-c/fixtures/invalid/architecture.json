@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "id": "INVALID",
+  "project_id": "PRJ-001",
+  "owner_batch": "B02",
+  "title": "Example architecture",
+  "status": "proposed",
+  "revision": 1,
+  "context": "example",
+  "options": [],
+  "selected_option": "example",
+  "affected_requirement_ids": []
+}

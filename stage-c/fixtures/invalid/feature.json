@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "id": "INVALID",
+  "project_id": "PRJ-001",
+  "owner_batch": "B01",
+  "title": "Example feature",
+  "status": "proposed",
+  "revision": 1,
+  "goal": "example",
+  "requirement_ids": [],
+  "release_target": "example"
+}

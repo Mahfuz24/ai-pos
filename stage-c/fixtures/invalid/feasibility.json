@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "id": "INVALID",
+  "project_id": "PRJ-001",
+  "owner_batch": "B03",
+  "title": "Example feasibility",
+  "status": "proposed",
+  "revision": 1,
+  "subject_ids": [],
+  "dimensions": {},
+  "evidence_ids": [],
+  "recommendation": "example"
+}

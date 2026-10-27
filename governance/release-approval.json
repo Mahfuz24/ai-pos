@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "repository": "Mahfuz24/ai-pos",
+  "target_branch": "main",
+  "candidate_sha": "UNSET",
+  "approved_by": "UNSET",
+  "approved_sha": "UNSET",
+  "approved_at": "UNSET",
+  "approval_source": "UNSET",
+  "release_authorized": false
+}

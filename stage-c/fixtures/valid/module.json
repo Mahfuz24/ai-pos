@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "id": "MOD-001",
+  "project_id": "PRJ-001",
+  "owner_batch": "B02",
+  "title": "Example module",
+  "status": "proposed",
+  "revision": 1,
+  "responsibilities": [],
+  "requirement_ids": [],
+  "dependencies": []
+}

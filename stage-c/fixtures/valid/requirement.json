@@ -1,0 +1,19 @@
+{
+  "schema_version": "1.0",
+  "id": "REQ-001",
+  "project_id": "PRJ-001",
+  "owner_batch": "B01",
+  "title": "Example requirement",
+  "status": "proposed",
+  "revision": 1,
+  "feature_id": "REQ-001",
+  "description": "example",
+  "acceptance_criteria": [
+    {
+      "criterion_id": "AC-001",
+      "description": "Example",
+      "verification_method": "test"
+    }
+  ],
+  "dependencies": []
+}

@@ -1,0 +1,74 @@
+{
+  "project": {
+    "prefix": "PRJ",
+    "owner": "B01"
+  },
+  "feature": {
+    "prefix": "FEAT",
+    "owner": "B01"
+  },
+  "requirement": {
+    "prefix": "REQ",
+    "owner": "B01"
+  },
+  "architecture": {
+    "prefix": "ADR",
+    "owner": "B02"
+  },
+  "module": {
+    "prefix": "MOD",
+    "owner": "B02"
+  },
+  "interface": {
+    "prefix": "API",
+    "owner": "B02"
+  },
+  "feasibility": {
+    "prefix": "FEAS",
+    "owner": "B03"
+  },
+  "risk": {
+    "prefix": "RISK",
+    "owner": "B03"
+  },
+  "design": {
+    "prefix": "DSN",
+    "owner": "B04"
+  },
+  "task": {
+    "prefix": "TASK",
+    "owner": "B05"
+  },
+  "test": {
+    "prefix": "TEST",
+    "owner": "B06"
+  },
+  "defect": {
+    "prefix": "BUG",
+    "owner": "B06"
+  },
+  "acceptance": {
+    "prefix": "ACC",
+    "owner": "B06"
+  },
+  "change": {
+    "prefix": "CR",
+    "owner": "B01"
+  },
+  "approval": {
+    "prefix": "APR",
+    "owner": "B01"
+  },
+  "handoff": {
+    "prefix": "HO",
+    "owner": "B01"
+  },
+  "evidence": {
+    "prefix": "EVD",
+    "owner": "B06"
+  },
+  "release": {
+    "prefix": "REL",
+    "owner": "B05"
+  }
+}

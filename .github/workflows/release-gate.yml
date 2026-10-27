@@ -1,0 +1,20 @@
+name: AI-POS Release Gate
+on:
+  push:
+    branches: [main, setup/stage-d-foundation]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Negative policy tests (must pass)
+        run: python3 -m pip install pytest && python3 -m pytest -q tests/test_release_gate_policy.py
+      - name: Verify founder approval and release eligibility (must block until trusted)
+        run: python3 scripts/verify_release.py

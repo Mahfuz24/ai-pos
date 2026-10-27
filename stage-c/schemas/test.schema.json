@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^TEST-[0-9]{3,}$"
+    },
+    "project_id": {
+      "type": "string",
+      "pattern": "^PRJ-[0-9]{3,}$"
+    },
+    "owner_batch": {
+      "enum": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "draft",
+        "ready",
+        "deprecated"
+      ]
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "approval_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "requirement_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "criterion_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "test_type": {
+      "type": "string"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expected_results": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "project_id",
+    "owner_batch",
+    "title",
+    "status",
+    "revision",
+    "requirement_ids",
+    "criterion_ids",
+    "test_type",
+    "steps",
+    "expected_results"
+  ],
+  "allOf": [
+    {
+      "properties": {
+        "id": {
+          "pattern": "^TEST-[0-9]{3,}$"
+        },
+        "owner_batch": {
+          "const": "B06"
+        }
+      }
+    }
+  ]
+}

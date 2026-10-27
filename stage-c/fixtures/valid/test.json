@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "id": "TEST-001",
+  "project_id": "PRJ-001",
+  "owner_batch": "B06",
+  "title": "Example test",
+  "status": "draft",
+  "revision": 1,
+  "requirement_ids": [],
+  "criterion_ids": [],
+  "test_type": "example",
+  "steps": [],
+  "expected_results": []
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "id": "INVALID",
+  "project_id": "PRJ-001",
+  "owner_batch": "B02",
+  "title": "Example interface",
+  "status": "proposed",
+  "revision": 1,
+  "module_id": "REQ-001",
+  "version": "example",
+  "inputs": [],
+  "outputs": [],
+  "requirement_ids": []
+}

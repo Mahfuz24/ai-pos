@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^REL-[0-9]{3,}$"
+    },
+    "project_id": {
+      "type": "string",
+      "pattern": "^PRJ-[0-9]{3,}$"
+    },
+    "owner_batch": {
+      "enum": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "proposed",
+        "ready",
+        "approved",
+        "deployed",
+        "rolled_back",
+        "blocked"
+      ]
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "approval_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "candidate_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "included_requirement_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "acceptance_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "unresolved_blockers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "founder_approval_ref": {
+      "type": "string",
+      "pattern": "^[A-Z]+-[0-9]{3,}$"
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "project_id",
+    "owner_batch",
+    "title",
+    "status",
+    "revision",
+    "candidate_sha",
+    "included_requirement_ids",
+    "acceptance_ids",
+    "unresolved_blockers",
+    "founder_approval_ref"
+  ],
+  "allOf": [
+    {
+      "properties": {
+        "id": {
+          "pattern": "^REL-[0-9]{3,}$"
+        },
+        "owner_batch": {
+          "const": "B05"
+        }
+      }
+    }
+  ]
+}

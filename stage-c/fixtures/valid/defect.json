@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "id": "BUG-001",
+  "project_id": "PRJ-001",
+  "owner_batch": "B06",
+  "title": "Example defect",
+  "status": "open",
+  "revision": 1,
+  "severity": "example",
+  "requirement_ids": [],
+  "source_sha": "0000000000000000000000000000000000000000",
+  "reproduction_steps": [],
+  "expected_behavior": "example",
+  "actual_behavior": "example",
+  "evidence_ids": []
+}
