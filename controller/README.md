@@ -1,20 +1,18 @@
-# External Release Controller — prototype
+# External Release Controller — fail-closed prototype
 
-This is a **separate operator-run decision engine**, not a GitHub-enforced merge gate or production deployer.
+The Fedora controller is a **local eligibility checker only**, not a production deployment pipeline.
 
-The operator must store `AI_POS_FOUNDER_KEY` (minimum 32 characters) **outside GitHub, the repository, and all AI chats**. A founder-approved payload must be signed using HMAC-SHA256 over canonical JSON, and the signed document must also remain outside the repository. The key is a local shared-secret credential, **not cryptographic proof of a GitHub account identity**. Protect it as a release credential.
+Founder key: `~/.config/ai-pos-controller/founder.key`, owned by the operator and mode `0600`. The signer and checker both read this file locally. **Never paste the key into ChatGPT, export it as an environment variable, commit it, or upload it to CI.** It is a shared-secret credential, not proof of GitHub account identity.
 
-Run only in a trusted operator environment with a read-only GitHub token in `GITHUB_TOKEN`:
-`python3 controller/release_controller.py --approval /private/path/approval.json --sha <40-character-sha>`
+The public GitHub Actions API needs no token. An optional read-only `GITHUB_TOKEN` may improve API rate limits.
 
-The controller fetches successful workflow runs from GitHub for the exact SHA and checks Stage C Verification and Foundation Smoke. It never deploys or merges. This is an initial proof of concept; no real founder key, external host, approval, or deployment credential has been provisioned.
+After selecting a real release candidate and independently reviewing it, the Founder can issue a short-lived local approval:
 
-**Security limitations:** HMAC key theft or local compromise allows forgery. CI workflows can be changed by a repository writer; check-name-only matching does not establish trusted workflow provenance. Private/free GitHub permits direct push/merge bypass. No deployment credential isolation has been verified. Accordingly do not use this prototype to authorize real production releases. The repository release gate remains fail-closed.
+```bash
+python3 controller/sign_founder_approval.py --sha FULL_40_CHARACTER_SHA --output "$HOME/.local/state/ai-pos-controller/approval.json"
+AI_POS_REPLAY_DB="$HOME/.local/state/ai-pos-controller/redeemed.sqlite3" python3 controller/release_controller.py --approval "$HOME/.local/state/ai-pos-controller/approval.json" --sha FULL_40_CHARACTER_SHA
+```
 
-Next engineering: pin workflow identity/path and source, verify workflow provenance from GitHub API, implement nonce/replay prevention and key rotation, isolate execution credentials, and run independent adversarial tests before any release.
+**Do not run the approval commands for a hypothetical candidate or as a routine test.** The signer issues an actual ten-minute approval document. The controller checks its HMAC, repository, SHA, time window, nonce, and three exact-SHA successful push workflow runs (Stage C, Foundation, Controller Tests), then atomically redeems the nonce. It prints only `ELIGIBLE` or `BLOCKED`; it does not merge or deploy. If the replay database is missing or unavailable, it blocks.
 
-## One-time approval replay protection
-
-Every signed payload must contain a cryptographically random `nonce` of 32–128 characters. Set `AI_POS_REPLAY_DB` to a persistent SQLite file **outside the repository and outside any ephemeral CI runner**. The controller atomically redeems the nonce after all other checks pass. If the database is absent or inaccessible, the controller blocks release. Protect the DB from rollback and deletion; backups/restore require operational controls. A nonce prevents repeated eligibility decisions but does not itself prove Founder identity or prevent direct GitHub merges.
-
-The HMAC key and replay DB must not be provided to ChatGPT, GitHub Actions, or repository writers. This prototype remains an eligibility checker only; it does not issue deployments.
+Security limits: the local key can be stolen on a compromised workstation; GitHub workflow names and paths do not alone prove trusted source provenance; workflow definitions and repository permissions need separate protection. The replay database needs durable backup and anti-rollback safeguards. Deployment credentials, a real product target, six-role end-to-end acceptance, and independent production authorization are **not implemented**. The repository Release Gate remains intentionally fail-closed.
