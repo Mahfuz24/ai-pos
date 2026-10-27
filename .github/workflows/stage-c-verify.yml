@@ -1,7 +1,7 @@
 name: AI-POS Stage C Verification
 on:
   push:
-    branches: [setup/stage-d-foundation]
+    branches: [main, setup/stage-d-foundation]
   pull_request:
 permissions:
   contents: read
