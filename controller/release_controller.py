@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""External, operator-controlled release decision. No deployment is performed."""
+"""External release eligibility checker; never merges or deploys."""
 import argparse
 import hashlib
 import hmac
@@ -7,17 +7,21 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.request
 
 REPO = "Mahfuz24/ai-pos"
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
-REQUIRED = {"AI-POS Stage C Verification", "AI-POS Foundation Smoke"}
+REQUIRED = {
+    "AI-POS Stage C Verification": ".github/workflows/stage-c-verification.yml",
+    "AI-POS Foundation Smoke": ".github/workflows/foundation-smoke.yml",
+}
 
 def canonical(value):
     return json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
 
 def verify_signature(payload, signature, secret):
-    if not secret or len(secret) < 32:
+    if not isinstance(secret, str) or len(secret) < 32 or not isinstance(signature, str):
         return False
     expected = hmac.new(secret.encode(), canonical(payload), hashlib.sha256).hexdigest()
     return hmac.compare_digest(expected, signature)
@@ -30,17 +34,19 @@ def evaluate(payload, signature, secret, runs, now):
         return False, "invalid SHA"
     if payload.get("founder") != "Mahfuz24" or payload.get("decision") != "approve-release":
         return False, "founder/decision mismatch"
-    if payload.get("expires_at", 0) <= now or payload.get("issued_at", now + 1) > now:
-        return False, "expired/future approval"
+    issued, expiry = payload.get("issued_at"), payload.get("expires_at")
+    if not isinstance(issued, int) or not isinstance(expiry, int) or issued > now or expiry <= now or expiry - issued > 600:
+        return False, "invalid or expired approval window"
     if not verify_signature(payload, signature, secret):
         return False, "invalid founder-controlled signature"
-    for name in REQUIRED:
-        if not any(r.get("name") == name and r.get("head_sha") == sha
-                   and r.get("status") == "completed" and r.get("conclusion") == "success"
-                   and r.get("event") in ("push", "pull_request")
+    for name, path in REQUIRED.items():
+        if not any(r.get("name") == name and r.get("path") == path
+                   and r.get("head_sha") == sha and r.get("status") == "completed"
+                   and r.get("conclusion") == "success" and r.get("event") == "push"
+                   and r.get("repository", {}).get("full_name") == REPO
                    for r in runs):
-            return False, "missing exact-SHA successful CI: " + name
-    return True, "release eligible; no deployment performed"
+            return False, "missing exact-SHA CI with matching workflow path: " + name
+    return True, "eligibility checks passed; no deployment performed"
 
 def fetch_runs(token, sha):
     if not token:
@@ -54,16 +60,15 @@ def fetch_runs(token, sha):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--approval", required=True, help="Founder-signed JSON stored OUTSIDE repository")
-    p.add_argument("--sha", required=True, help="Exact release candidate SHA")
+    p.add_argument("--approval", required=True)
+    p.add_argument("--sha", required=True)
     args = p.parse_args()
-    import time
     try:
-        document = json.load(open(args.approval, encoding="utf-8"))
+        with open(args.approval, encoding="utf-8") as f:
+            document = json.load(f)
         payload, signature = document["payload"], document["signature"]
         if payload.get("candidate_sha") != args.sha:
             raise ValueError("requested SHA mismatch")
-        # Fetch directly from GitHub rather than accepting repository-supplied CI claims.
         runs = fetch_runs(os.environ.get("GITHUB_TOKEN"), args.sha)
         allowed, reason = evaluate(payload, signature, os.environ.get("AI_POS_FOUNDER_KEY"), runs, int(time.time()))
     except (OSError, ValueError, KeyError, TypeError) as exc:
