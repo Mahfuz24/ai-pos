@@ -12,3 +12,9 @@ The controller fetches successful workflow runs from GitHub for the exact SHA an
 **Security limitations:** HMAC key theft or local compromise allows forgery. CI workflows can be changed by a repository writer; check-name-only matching does not establish trusted workflow provenance. Private/free GitHub permits direct push/merge bypass. No deployment credential isolation has been verified. Accordingly do not use this prototype to authorize real production releases. The repository release gate remains fail-closed.
 
 Next engineering: pin workflow identity/path and source, verify workflow provenance from GitHub API, implement nonce/replay prevention and key rotation, isolate execution credentials, and run independent adversarial tests before any release.
+
+## One-time approval replay protection
+
+Every signed payload must contain a cryptographically random `nonce` of 32–128 characters. Set `AI_POS_REPLAY_DB` to a persistent SQLite file **outside the repository and outside any ephemeral CI runner**. The controller atomically redeems the nonce after all other checks pass. If the database is absent or inaccessible, the controller blocks release. Protect the DB from rollback and deletion; backups/restore require operational controls. A nonce prevents repeated eligibility decisions but does not itself prove Founder identity or prevent direct GitHub merges.
+
+The HMAC key and replay DB must not be provided to ChatGPT, GitHub Actions, or repository writers. This prototype remains an eligibility checker only; it does not issue deployments.
