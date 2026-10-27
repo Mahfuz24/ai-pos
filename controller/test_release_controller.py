@@ -8,7 +8,7 @@ from release_controller import consume_nonce
 import unittest
 from unittest.mock import patch
 
-from release_controller import canonical, evaluate, fetch_runs
+from release_controller import canonical, evaluate, fetch_runs, read_founder_key
 
 SHA = "a" * 40
 SECRET = "x" * 48
@@ -40,6 +40,28 @@ class ControllerTests(unittest.TestCase):
             return Response()
         with patch("release_controller.urllib.request.urlopen", fake_open):
             self.assertEqual(fetch_runs(None, SHA), [])
+
+    def test_local_key_read_and_reject_permissive_file(self):
+        import os
+        with tempfile.TemporaryDirectory() as folder:
+            key = Path(folder) / "founder.key"
+            key.write_text("a" * 64 + "\\n")
+            os.chmod(key, 0o600)
+            self.assertEqual(read_founder_key(key), "a" * 64)
+            os.chmod(key, 0o644)
+            with self.assertRaises(ValueError):
+                read_founder_key(key)
+
+    def test_local_key_rejects_symlink(self):
+        import os
+        with tempfile.TemporaryDirectory() as folder:
+            key = Path(folder) / "founder.key"
+            key.write_text("a" * 64)
+            os.chmod(key, 0o600)
+            alias = Path(folder) / "alias.key"
+            alias.symlink_to(key)
+            with self.assertRaises(ValueError):
+                read_founder_key(alias)
 
     def test_valid_signature_and_ci(self):
         p, s = approval()
