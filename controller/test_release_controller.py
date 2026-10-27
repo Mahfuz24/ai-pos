@@ -19,9 +19,10 @@ def approval(**overrides):
     return payload, sig
 
 def runs(sha=SHA):
-    return [{"name": n, "head_sha": sha, "status": "completed",
-             "conclusion": "success", "event": "push"}
-            for n in ("AI-POS Stage C Verification", "AI-POS Foundation Smoke")]
+    return [{"name": n, "path": path, "repository": {"full_name": "Mahfuz24/ai-pos"},
+             "head_sha": sha, "status": "completed", "conclusion": "success", "event": "push"}
+            for n, path in (("AI-POS Stage C Verification", ".github/workflows/stage-c-verify.yml"),
+                            ("AI-POS Foundation Smoke", ".github/workflows/foundation-smoke.yml"))]
 
 class ControllerTests(unittest.TestCase):
     def test_valid_signature_and_ci(self):
@@ -49,6 +50,16 @@ class ControllerTests(unittest.TestCase):
     def test_invalid_repo(self):
         p, s = approval(repository="attacker/repo")
         self.assertFalse(evaluate(p, s, SECRET, runs(), NOW)[0])
+    def test_wrong_workflow_path(self):
+        p, s = approval()
+        rs = runs()
+        rs[0]["path"] = ".github/workflows/attacker.yml"
+        self.assertFalse(evaluate(p, s, SECRET, rs, NOW)[0])
+    def test_wrong_workflow_repository(self):
+        p, s = approval()
+        rs = runs()
+        rs[0]["repository"] = {"full_name": "attacker/repo"}
+        self.assertFalse(evaluate(p, s, SECRET, rs, NOW)[0])
     def test_future_timestamp(self):
         p, s = approval(issued_at=NOW+10)
         self.assertFalse(evaluate(p, s, SECRET, runs(), NOW)[0])
