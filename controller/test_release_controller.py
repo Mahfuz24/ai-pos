@@ -2,6 +2,9 @@ import hashlib
 import hmac
 import json
 import time
+import tempfile
+from pathlib import Path
+from release_controller import consume_nonce
 import unittest
 
 from release_controller import canonical, evaluate
@@ -13,7 +16,7 @@ NOW = 2000000000
 def approval(**overrides):
     payload = {"repository": "Mahfuz24/ai-pos", "candidate_sha": SHA,
                "founder": "Mahfuz24", "decision": "approve-release",
-               "issued_at": NOW - 30, "expires_at": NOW + 300}
+               "issued_at": NOW - 30, "expires_at": NOW + 300, "nonce": "n" * 40}
     payload.update(overrides)
     sig = hmac.new(SECRET.encode(), canonical(payload), hashlib.sha256).hexdigest()
     return payload, sig
@@ -60,6 +63,14 @@ class ControllerTests(unittest.TestCase):
         rs = runs()
         rs[0]["repository"] = {"full_name": "attacker/repo"}
         self.assertFalse(evaluate(p, s, SECRET, rs, NOW)[0])
+    def test_replay_rejected(self):
+        with tempfile.TemporaryDirectory() as folder:
+            db = str(Path(folder) / "redeemed.sqlite3")
+            self.assertTrue(consume_nonce(db, "n" * 40, SHA))
+            self.assertFalse(consume_nonce(db, "n" * 40, SHA))
+    def test_missing_nonce(self):
+        p, s = approval(nonce="")
+        self.assertFalse(evaluate(p, s, SECRET, runs(), NOW)[0])
     def test_future_timestamp(self):
         p, s = approval(issued_at=NOW+10)
         self.assertFalse(evaluate(p, s, SECRET, runs(), NOW)[0])
