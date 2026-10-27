@@ -19,6 +19,7 @@ SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 REQUIRED = {
     "AI-POS Stage C Verification": ".github/workflows/stage-c-verify.yml",
     "AI-POS Foundation Smoke": ".github/workflows/foundation-smoke.yml",
+    "AI-POS Controller Unit Tests": ".github/workflows/controller-tests.yml",
 }
 
 def read_founder_key(path=None):
