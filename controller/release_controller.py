@@ -6,6 +6,7 @@ import hmac
 import json
 import pathlib
 import sqlite3
+import stat
 import uuid
 import os
 import re
@@ -19,6 +20,19 @@ REQUIRED = {
     "AI-POS Stage C Verification": ".github/workflows/stage-c-verify.yml",
     "AI-POS Foundation Smoke": ".github/workflows/foundation-smoke.yml",
 }
+
+def read_founder_key(path=None):
+    """Read local-only secret; reject symlinks and permissive key files."""
+    key_path = pathlib.Path(path) if path else pathlib.Path.home() / ".config/ai-pos-controller/founder.key"
+    info = key_path.lstat()
+    if not stat.S_ISREG(info.st_mode) or (info.st_mode & 0o077):
+        raise ValueError("Founder key must be a regular file inaccessible to group/others")
+    if hasattr(os, "getuid") and info.st_uid != os.getuid():
+        raise ValueError("Founder key must be owned by current user")
+    secret = key_path.read_text(encoding="utf-8").strip()
+    if len(secret) != 64 or not re.fullmatch(r"[0-9a-fA-F]{64}", secret):
+        raise ValueError("Founder key format invalid")
+    return secret
 
 def canonical(value):
     return json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
@@ -96,7 +110,7 @@ def main():
         if payload.get("candidate_sha") != args.sha:
             raise ValueError("requested SHA mismatch")
         runs = fetch_runs(os.environ.get("GITHUB_TOKEN"), args.sha)
-        allowed, reason = evaluate(payload, signature, os.environ.get("AI_POS_FOUNDER_KEY"), runs, int(time.time()))
+        allowed, reason = evaluate(payload, signature, read_founder_key(), runs, int(time.time()))
         if allowed and not consume_nonce(os.environ.get("AI_POS_REPLAY_DB"), payload["nonce"], args.sha):
             allowed, reason = False, "approval nonce already redeemed"
     except (OSError, ValueError, KeyError, TypeError) as exc:
