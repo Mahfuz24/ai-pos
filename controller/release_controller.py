@@ -55,12 +55,13 @@ def evaluate(payload, signature, secret, runs, now):
     return True, "eligibility checks passed; no deployment performed"
 
 def fetch_runs(token, sha):
-    if not token:
-        raise ValueError("GITHUB_TOKEN missing")
+    headers = {"Accept": "application/vnd.github+json",
+               "User-Agent": "ai-pos-external-controller"}
+    if token:
+        headers["Authorization"] = "Bearer " + token
     req = urllib.request.Request(
         "https://api.github.com/repos/" + REPO + "/actions/runs?head_sha=" + sha + "&per_page=100",
-        headers={"Authorization": "Bearer " + token, "Accept": "application/vnd.github+json",
-                 "User-Agent": "ai-pos-external-controller"})
+        headers=headers)
     with urllib.request.urlopen(req, timeout=15) as response:
         return json.load(response).get("workflow_runs", [])
 
