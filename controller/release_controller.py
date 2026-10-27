@@ -4,6 +4,9 @@ import argparse
 import hashlib
 import hmac
 import json
+import pathlib
+import sqlite3
+import uuid
 import os
 import re
 import sys
@@ -37,6 +40,9 @@ def evaluate(payload, signature, secret, runs, now):
     issued, expiry = payload.get("issued_at"), payload.get("expires_at")
     if not isinstance(issued, int) or not isinstance(expiry, int) or issued > now or expiry <= now or expiry - issued > 600:
         return False, "invalid or expired approval window"
+    nonce = payload.get("nonce")
+    if not isinstance(nonce, str) or len(nonce) < 32 or len(nonce) > 128:
+        return False, "missing/invalid approval nonce"
     if not verify_signature(payload, signature, secret):
         return False, "invalid founder-controlled signature"
     for name, path in REQUIRED.items():
@@ -58,6 +64,25 @@ def fetch_runs(token, sha):
     with urllib.request.urlopen(req, timeout=15) as response:
         return json.load(response).get("workflow_runs", [])
 
+def consume_nonce(db_path, nonce, sha):
+    """Atomic one-time redemption; database must live outside repository."""
+    if not db_path:
+        raise ValueError("AI_POS_REPLAY_DB missing")
+    path = pathlib.Path(db_path).expanduser().resolve()
+    if not path.parent.is_dir():
+        raise ValueError("replay database parent directory missing")
+    with sqlite3.connect(str(path), timeout=10, isolation_level=None) as conn:
+        conn.execute("PRAGMA busy_timeout=10000")
+        conn.execute("BEGIN IMMEDIATE")
+        conn.execute("CREATE TABLE IF NOT EXISTS approvals (nonce TEXT PRIMARY KEY, sha TEXT NOT NULL)")
+        try:
+            conn.execute("INSERT INTO approvals(nonce,sha) VALUES (?,?)", (nonce, sha))
+        except sqlite3.IntegrityError:
+            conn.execute("ROLLBACK")
+            return False
+        conn.execute("COMMIT")
+    return True
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--approval", required=True)
@@ -71,6 +96,8 @@ def main():
             raise ValueError("requested SHA mismatch")
         runs = fetch_runs(os.environ.get("GITHUB_TOKEN"), args.sha)
         allowed, reason = evaluate(payload, signature, os.environ.get("AI_POS_FOUNDER_KEY"), runs, int(time.time()))
+        if allowed and not consume_nonce(os.environ.get("AI_POS_REPLAY_DB"), payload["nonce"], args.sha):
+            allowed, reason = False, "approval nonce already redeemed"
     except (OSError, ValueError, KeyError, TypeError) as exc:
         allowed, reason = False, str(exc)
     print(("ELIGIBLE: " if allowed else "BLOCKED: ") + reason)
