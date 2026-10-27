@@ -3,6 +3,7 @@ on:
   pull_request:
   push:
     branches:
+      - main
       - setup/stage-d-foundation
 permissions:
   contents: read
