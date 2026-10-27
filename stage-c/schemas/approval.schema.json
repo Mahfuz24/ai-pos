@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^APR-[0-9]{3,}$"
+    },
+    "project_id": {
+      "type": "string",
+      "pattern": "^PRJ-[0-9]{3,}$"
+    },
+    "owner_batch": {
+      "enum": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "revoked"
+      ]
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "approval_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "request_id": {
+      "type": "string",
+      "pattern": "^[A-Z]+-[0-9]{3,}$"
+    },
+    "decision": {
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "revoked"
+      ]
+    },
+    "approver_role": {
+      "const": "founder"
+    },
+    "approved_subject_revision": {
+      "type": "integer"
+    },
+    "approved_content_hash": {
+      "type": "string"
+    },
+    "evidence_ref": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "project_id",
+    "owner_batch",
+    "title",
+    "status",
+    "revision",
+    "request_id",
+    "decision",
+    "approver_role",
+    "approved_subject_revision",
+    "approved_content_hash",
+    "evidence_ref"
+  ],
+  "allOf": [
+    {
+      "properties": {
+        "id": {
+          "pattern": "^APR-[0-9]{3,}$"
+        },
+        "owner_batch": {
+          "const": "B01"
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "approved"
+          }
+        },
+        "required": [
+          "decision"
+        ]
+      },
+      "then": {
+        "properties": {
+          "approved_subject_revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "approved_content_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      }
+    }
+  ]
+}

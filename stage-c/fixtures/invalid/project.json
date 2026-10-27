@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "id": "INVALID",
+  "project_id": "PRJ-001",
+  "owner_batch": "B01",
+  "title": "Example project",
+  "status": "proposed",
+  "revision": 1,
+  "vision": "example",
+  "problem_statement": "example",
+  "target_users": [],
+  "objectives": [],
+  "in_scope": [],
+  "out_of_scope": []
+}

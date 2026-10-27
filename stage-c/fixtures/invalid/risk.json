@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "id": "INVALID",
+  "project_id": "PRJ-001",
+  "owner_batch": "B03",
+  "title": "Example risk",
+  "status": "proposed",
+  "revision": 1,
+  "description": "example",
+  "likelihood": "example",
+  "impact": "example",
+  "affected_ids": [],
+  "mitigation": "example"
+}

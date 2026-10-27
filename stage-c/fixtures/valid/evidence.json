@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "id": "EVD-001",
+  "project_id": "PRJ-001",
+  "owner_batch": "B06",
+  "title": "Example evidence",
+  "status": "not_run",
+  "revision": 1,
+  "producer_batch": "B01",
+  "evidence_type": "example",
+  "source_sha": "0000000000000000000000000000000000000000",
+  "environment_id": "example",
+  "result": "not_run",
+  "artifact_refs": [],
+  "artifact_hashes": []
+}

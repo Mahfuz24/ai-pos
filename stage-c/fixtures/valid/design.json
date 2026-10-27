@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "id": "DSN-001",
+  "project_id": "PRJ-001",
+  "owner_batch": "B04",
+  "title": "Example design",
+  "status": "proposed",
+  "revision": 1,
+  "component_name": "example",
+  "supported_states": [],
+  "responsive_rules": [],
+  "requirement_ids": []
+}

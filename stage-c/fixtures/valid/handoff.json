@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "id": "HO-001",
+  "project_id": "PRJ-001",
+  "owner_batch": "B01",
+  "title": "Example handoff",
+  "status": "draft",
+  "revision": 1,
+  "from_batch": "B01",
+  "to_batch": "B01",
+  "completed_record_ids": [],
+  "evidence_ids": [],
+  "next_actions": []
+}

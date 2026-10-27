@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "id": "INVALID",
+  "project_id": "PRJ-001",
+  "owner_batch": "B06",
+  "title": "Example acceptance",
+  "status": "proposed",
+  "revision": 1,
+  "requirement_id": "REQ-001",
+  "criterion_ids": [],
+  "candidate_sha": "0000000000000000000000000000000000000000",
+  "evidence_ids": [],
+  "unresolved_defect_ids": []
+}

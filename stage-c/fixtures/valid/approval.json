@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "id": "APR-001",
+  "project_id": "PRJ-001",
+  "owner_batch": "B01",
+  "title": "Example approval",
+  "status": "pending",
+  "revision": 1,
+  "request_id": "REQ-001",
+  "decision": "pending",
+  "approver_role": "founder",
+  "approved_subject_revision": 1,
+  "approved_content_hash": "example",
+  "evidence_ref": "example"
+}
