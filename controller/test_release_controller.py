@@ -6,8 +6,9 @@ import tempfile
 from pathlib import Path
 from release_controller import consume_nonce
 import unittest
+from unittest.mock import patch
 
-from release_controller import canonical, evaluate
+from release_controller import canonical, evaluate, fetch_runs
 
 SHA = "a" * 40
 SECRET = "x" * 48
@@ -28,6 +29,18 @@ def runs(sha=SHA):
                             ("AI-POS Foundation Smoke", ".github/workflows/foundation-smoke.yml"))]
 
 class ControllerTests(unittest.TestCase):
+    def test_public_api_does_not_send_authorization(self):
+        class Response:
+            def __enter__(self): return self
+            def __exit__(self, *args): return False
+            def read(self): return b'{"workflow_runs":[]}'
+        def fake_open(request, timeout):
+            self.assertIsNone(request.get_header("Authorization"))
+            self.assertEqual(timeout, 15)
+            return Response()
+        with patch("release_controller.urllib.request.urlopen", fake_open):
+            self.assertEqual(fetch_runs(None, SHA), [])
+
     def test_valid_signature_and_ci(self):
         p, s = approval()
         self.assertTrue(evaluate(p, s, SECRET, runs(), NOW)[0])
