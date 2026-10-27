@@ -1,10 +1,7 @@
 name: AI-POS Controller Unit Tests
 on:
   push:
-    branches: [setup/stage-d-foundation]
-    paths:
-      - 'controller/**'
-      - '.github/workflows/controller-tests.yml'
+    branches: [main, setup/stage-d-foundation]
   pull_request:
     branches: [main]
 permissions:
